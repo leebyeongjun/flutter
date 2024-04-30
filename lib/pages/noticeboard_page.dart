@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +23,7 @@ class NoticeboardPage extends StatefulWidget {
 }
 
 class _NoticeboardPageState extends State<NoticeboardPage> {
-  List<Post> posts =[];
+  List<Post> posts = [];
 
   void _deletePost(Post post) {
     setState(() {
@@ -66,6 +68,7 @@ class _NoticeboardPageState extends State<NoticeboardPage> {
   Future<void> _showPostDialog(BuildContext context) async {
     TextEditingController titleController = TextEditingController();
     TextEditingController contentController = TextEditingController();
+    String? imageUrl; // Nullable String for image URL
 
     return showDialog(
       context: context,
@@ -85,9 +88,20 @@ class _NoticeboardPageState extends State<NoticeboardPage> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: contentController,
-                    decoration:
-                    InputDecoration(hintText: '게시글 내용을 입력하세요'),
+                    decoration: InputDecoration(hintText: '게시글 내용을 입력하세요'),
                     maxLines: 5,
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        setState(() {
+                          imageUrl = pickedFile.path; // Assign image path if picked
+                        });
+                      }
+                    },
+                    child: Text('이미지 업로드'),
                   ),
                 ],
               ),
@@ -96,10 +110,9 @@ class _NoticeboardPageState extends State<NoticeboardPage> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                if (titleController.text.isNotEmpty &&
-                    contentController.text.isNotEmpty) {
+                if (titleController.text.isNotEmpty && contentController.text.isNotEmpty) {
                   setState(() {
-                    posts.add(Post(titleController.text, contentController.text, "사용자"));
+                    posts.add(Post(titleController.text, contentController.text, "사용자", imageUrl: imageUrl));
                   });
                   Navigator.of(context).pop();
                 }
@@ -159,8 +172,9 @@ class Post {
   final String user;
   int likes;
   bool liked;
+  String? imageUrl; // Nullable imageUrl
 
-  Post(this.title, this.content, this.user, {this.likes = 0, this.liked = false});
+  Post(this.title, this.content, this.user, {this.likes = 0, this.liked = false, this.imageUrl});
 
   void toggleLike() {
     liked = !liked;
@@ -236,6 +250,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ],
             ),
             SizedBox(height: 10),
+            if (widget.post.imageUrl != null) // 이미지가 있는 경우에만 표시
+              Image.file(
+                File(widget.post.imageUrl!),
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            SizedBox(height: 10),
             Text(
               widget.post.content,
               maxLines: 3,
@@ -309,6 +331,18 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     InputDecoration(hintText: '게시글 내용을 입력하세요'),
                     maxLines: 5,
                   ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+                      if (pickedFile != null) {
+                        setState(() {
+                          post.imageUrl = pickedFile.path; // Update image path
+                        });
+                      }
+                    },
+                    child: Text('이미지 업로드'),
+                  ),
                 ],
               ),
             ),
@@ -319,9 +353,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 if (titleController.text.isNotEmpty &&
                     contentController.text.isNotEmpty) {
                   setState(() {
-                    widget.post.title = titleController.text;
-                    widget.post.content = contentController.text;
-                    widget.onPostUpdated?.call(widget.post);
+                    post.title = titleController.text;
+                    post.content = contentController.text;
+                    widget.onPostUpdated?.call(post);
                   });
                   Navigator.of(context).pop();
                 }
@@ -399,6 +433,14 @@ class PostCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
+            if (post.imageUrl != null) // 이미지가 있는 경우에만 표시
+              Image.file(
+                File(post.imageUrl!),
+                height: 100,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            SizedBox(height: 10),
             Text(
               post.content,
               maxLines: 3,
@@ -415,4 +457,4 @@ class PostCard extends StatelessWidget {
       ),
     );
   }
-}
+} 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:io';
+import 'enroll_page.dart';
 
 class ShootingPage extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class ShootingPage extends StatefulWidget {
 class _ShootingPageState extends State<ShootingPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  XFile? _capturedImage; // 촬영된 이미지를 저장할 변수 추가
+  XFile? _capturedImage;
 
   @override
   void initState() {
@@ -44,15 +45,15 @@ class _ShootingPageState extends State<ShootingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text('Shooting Page'),
       ),
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return _capturedImage != null
-                ? Image.file(File(_capturedImage!.path)) // 촬영된 이미지를 표시
-                : CameraPreview(_controller); // 카메라 미리보기 표시
+                ? Image.file(File(_capturedImage!.path))
+                : CameraPreview(_controller);
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -72,9 +73,16 @@ class _ShootingPageState extends State<ShootingPage> {
                 await _initializeControllerFuture;
                 final XFile image = await _controller.takePicture();
                 setState(() {
-                  _capturedImage = image; // 촬영된 이미지 저장
+                  _capturedImage = image;
                 });
-                print('사진이 성공적으로 촬영되었습니다.');
+                print('Photo taken successfully.');
+                // 이미지를 EnrollPage로 전달
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EnrollPage(imagePath: _capturedImage!.path),
+                  ),
+                );
               } catch (e) {
                 print('Error taking picture: $e');
               }

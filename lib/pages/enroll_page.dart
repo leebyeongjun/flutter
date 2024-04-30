@@ -4,20 +4,33 @@ import 'package:image_picker/image_picker.dart';
 import 'loading_page.dart';
 
 class EnrollPage extends StatefulWidget {
+  final String imagePath;
+
+  const EnrollPage({Key? key, required this.imagePath}) : super(key: key);
+
   @override
   _EnrollPageState createState() => _EnrollPageState();
 }
 
 class _EnrollPageState extends State<EnrollPage> {
-  late String imagePath = '';
+  late String imagePath;
+  bool imageUploaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    imagePath = widget.imagePath;
+    imageUploaded = imagePath.isNotEmpty;
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         imagePath = pickedFile.path;
+        imageUploaded = true;
       });
     }
   }
@@ -27,14 +40,14 @@ class _EnrollPageState extends State<EnrollPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white, // 알림창 배경색을 흰색으로 설정
+          backgroundColor: Colors.white,
           title: Text(
             '알림',
-            style: TextStyle(color: Colors.black), // 글자 색상을 검정색으로 설정
+            style: TextStyle(color: Colors.black),
           ),
           content: Text(
             '등록이 완료되었습니다.',
-            style: TextStyle(color: Colors.black), // 글자 색상을 검정색으로 설정
+            style: TextStyle(color: Colors.black),
           ),
           actions: <Widget>[
             TextButton(
@@ -46,11 +59,11 @@ class _EnrollPageState extends State<EnrollPage> {
                 );
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black), // 버튼 배경색을 검정색으로 설정
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
               ),
               child: Text(
                 '확인',
-                style: TextStyle(color: Colors.white), // 버튼 안의 글자 색상을 흰색으로 설정
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -69,30 +82,39 @@ class _EnrollPageState extends State<EnrollPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            imagePath.isNotEmpty
-                ? Image.file(
-              File(imagePath),
-              height: 200,
+            imageUploaded
+                ? Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(File(imagePath)),
+                  fit: BoxFit.cover,
+                ),
+              ),
             )
                 : Container(),
             SizedBox(height: 20),
-            IconButton(
+            !imageUploaded
+                ? IconButton(
               onPressed: () {
                 _pickImage();
               },
               icon: Icon(Icons.image),
               iconSize: 40,
               color: Colors.black,
-            ),
+            )
+                : Container(),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // 등록이 완료되었음을 알리는 다이얼로그를 표시하고, LoadingPage로 이동합니다.
                 _showCompletionDialog(context);
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                backgroundColor:
+                MaterialStateProperty.all<Color>(Colors.black),
+                foregroundColor:
+                MaterialStateProperty.all<Color>(Colors.white),
               ),
               child: Text('등록하기'),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'select_page.dart';
 
-// ResultDetailPage 정의
 class ResultDetailPage extends StatelessWidget {
   final String result;
 
@@ -24,6 +24,20 @@ class ResultDetailPage extends StatelessWidget {
               Text(
                 result,
                 style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SelectPage()),
+                  );
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                child: Text('홈으로 가기'),
               ),
             ],
           ),

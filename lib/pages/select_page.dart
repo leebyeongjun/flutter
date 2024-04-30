@@ -46,7 +46,7 @@ class SelectPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EnrollPage()),
+                    MaterialPageRoute(builder: (context) => EnrollPage(imagePath: '')), // 수정된 부분
                   );
                 },
                 child: Text('등록하기'),
@@ -63,6 +63,7 @@ class SelectPage extends StatelessWidget {
                 child: Text('게시판'),
               ),
               SizedBox(height: 8),
+              // "내정보" 버튼
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(

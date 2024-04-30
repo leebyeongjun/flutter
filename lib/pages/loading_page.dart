@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'result_detail_page.dart';
 import 'package:flutter_login/components/logo.dart';
+import 'result_detail_page.dart';
 
 class LoadingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      backgroundColor: Colors.white,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           CircularProgressIndicator(),
           SizedBox(height: 20),
-          Text(
-            'AI가 분석하는 중입니다...',
-            style: TextStyle(color: Colors.black), // 텍스트 색상을 검정색으로 설정
-          ),
+          Text('AI가 분석하는 중입니다...', style: TextStyle(color: Colors.black)),
         ],
       ),
     );
@@ -37,40 +34,16 @@ class ResultPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Icon(Icons.check_circle_outline, color: Colors.green, size: 100),
               SizedBox(height: 20),
-              Icon(
-                Icons.check_circle_outline,
-                color: Colors.green,
-                size: 100,
-              ),
-              SizedBox(height: 20),
-              Text(
-                '분석이 완료되었습니다.',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+              Text('분석이 완료되었습니다.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               SizedBox(height: 10),
-              Text(
-                result,
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
+              Text(result, style: TextStyle(fontSize: 16)),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ResultDetailPage(result)),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(200, 60),
-                ),
-                child: Text(
-                  '결과 보기',
-                  style: TextStyle(color: Colors.white),
-                ),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ResultDetailPage(result))),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.black, minimumSize: Size(200, 60)),
+                child: Text('결과 보기', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -84,21 +57,14 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('AI 이미지 분석'),
-      ),
+      appBar: AppBar(title: Text('AI 이미지 분석')),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background_image.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/background_image.jpg'), fit: BoxFit.cover)),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Logo("애니멀봐"),
+              Logo("애니멀봐"),
               SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
@@ -115,14 +81,8 @@ class MainPage extends StatelessWidget {
                     );
                   });
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  minimumSize: Size(200, 60),
-                ),
-                child: Text(
-                  '분석 시작',
-                  style: TextStyle(color: Colors.white),
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.black, minimumSize: Size(200, 60)),
+                child: Text('분석 시작', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -131,8 +91,7 @@ class MainPage extends StatelessWidget {
     );
   }
 }
+
 void main() {
-  runApp(MaterialApp(
-    home: MainPage(),
-  ));
+  runApp(MaterialApp(home: MainPage()));
 }
