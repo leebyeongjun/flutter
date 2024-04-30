@@ -15,6 +15,7 @@ class _InformationPageState extends State<InformationPage> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
